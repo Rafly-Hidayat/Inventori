@@ -13,5 +13,19 @@ module.exports = {
 			if(err) throw err
 			res.send('add new supplier success.', 200)
 		})
+	},
+
+	update: (req, res) => {
+		Supplier.update(req.con, req.body, req.params.kd_supplier, (err, rows) => {
+			if(err) throw err
+			res.send('update supplier success.', 200)
+		})
+	},
+
+	delete: (req, res) => {
+		Supplier.delete(req.con, req.params.kd_supplier, (err, rows) => {
+			if(err) throw err
+			res.send('delete supplier success.', 200)
+		})
 	}
 }
