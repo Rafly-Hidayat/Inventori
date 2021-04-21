@@ -16,16 +16,10 @@ module.exports = {
 	},
 
 	update: (req, res) => {
-		Supplier.update(req.con, req.body, req.params.kd_supplier, (err, rows) => {
+		Supplier.update(req.con, req.body, req.params.id, (err, rows) => {
 			if(err) throw err
-			res.send('update supplier success.', 200)
-		})
-	},
-
-	delete: (req, res) => {
-		Supplier.delete(req.con, req.params.kd_supplier, (err, rows) => {
-			if(err) throw err
-			res.send('delete supplier success.', 200)
+			res.send('success.', 200)
 		})
 	}
+
 }

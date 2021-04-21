@@ -6,7 +6,6 @@ const { addSupplierValidation } = require('../validator/supplier/supplier.valida
 // Router Supplier
 router.get('/supplier', supplierController.getAll)
 router.post('/add/supplier', addSupplierValidation, supplierController.add)
-router.put('/update/supplier/:kd_supplier', addSupplierValidation, supplierController.update)
-router.delete('/delete/supplier/:kd_supplier', supplierController.delete)
+router.put('/ubah/supplier/:id', addSupplierValidation, supplierController.update)
 
 module.exports = router
