@@ -20,8 +20,10 @@ app.use(function(req, res, next) {
 
 // include router
 const dataRouter = require('./routes/dataRouter')
+const supplierRouter = require('./routes/supplierRouter')
 // use router
 app.use(dataRouter)
+app.use(supplierRouter)
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}!`)
