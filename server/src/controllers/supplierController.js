@@ -13,5 +13,13 @@ module.exports = {
 			if(err) throw err
 			res.send('add new supplier success.', 200)
 		})
+	},
+
+	update: (req, res) => {
+		Supplier.update(req.con, req.body, req.params.id, (err, rows) => {
+			if(err) throw err
+			res.send('success.', 200)
+		})
 	}
+
 }
