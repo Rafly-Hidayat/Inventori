@@ -20,6 +20,14 @@ module.exports = {
 			if(err) throw err
 			res.send('success.', 200)
 		})
+	},
+
+	delete: (req, res) => {
+		Supplier.delete(req.con, req.params.id, (err, rows) => {
+			if(err) throw err
+			res.send('success.', 200)
+		})
 	}
+
 
 }
