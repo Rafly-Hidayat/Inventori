@@ -5,6 +5,6 @@ const { addBarangValidation } = require('../validator/barang/barang.validation')
 
 // Router Barang
 router.get('/barang', dataController.getAll)
-router.post('/add/barang', addBarangValidation, dataController.add)
+router.post('/tambah/barang', addBarangValidation, dataController.add)
 
 module.exports = router
