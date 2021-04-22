@@ -19,6 +19,11 @@ module.exports = {
 						alamat = '${data.alamat}'
 						WHERE kd_supplier = ${id}`
 		con.query(query, callback)
+	},
+
+	delete: (con, id, callback) => {
+		const query = `DELETE FROM supplier WHERE kd_supplier = ${id}`
+		con.query(query, callback)
 	}
 
 }
