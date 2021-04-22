@@ -19,6 +19,6 @@ module.exports = {
 						alamat = '${data.alamat}'
 						WHERE kd_supplier = ${id}`
 		con.query(query, callback)
-	},
+	}
 
 }
