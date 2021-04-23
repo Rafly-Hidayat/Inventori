@@ -13,8 +13,8 @@ module.exports = {
 		con.query(query, callback)
 	},
 	
-	update: (con, data, id, callback) => {
-		const query = `UPDATE supplier SET
+	update: (con, data, id, callback) => {		
+			const query = `UPDATE supplier SET
 						nama_supplier = '${data.nama_supplier}',
 						alamat = '${data.alamat}'
 						WHERE kd_supplier = ${id}`
