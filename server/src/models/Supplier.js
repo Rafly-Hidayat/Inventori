@@ -5,6 +5,11 @@ module.exports = {
 		const query = "SELECT * FROM supplier"
 		con.query(query, callback)
 	},
+	
+	getById: (con, id, callback) => {
+		const query = `SELECT * FROM supplier WHERE kd_supplier = ${id}`
+		con.query(query, callback)
+	},
 
 	add: (con, data, callback) => {
 		const query = `INSERT INTO supplier SET
@@ -13,7 +18,7 @@ module.exports = {
 		con.query(query, callback)
 	},
 	
-	update: (con, data, id, res,callback) => {	
+	update: (con, data, id, res, callback) => {	
 		con.query(`SELECT * FROM supplier WHERE kd_supplier = ${id}`, (e, rows) => {
 			if(e) throw e
 			if(rows == 0) return res.send('id supplier tidak ditemukan.', 404)	

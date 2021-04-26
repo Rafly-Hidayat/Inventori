@@ -7,6 +7,14 @@ module.exports = {
 			res.json({ data: rows })
 		})
 	},
+	
+	getById: (req, res) => {
+		Supplier.getById(req.con, req.params.id, (err, rows) => {
+			if(err) throw err
+			rows.length == 0 ? res.send("id tidak ditemukan.", 404) : res.json({ data: rows })
+			
+		})
+	},
 
 	add: (req, res) => {
 		Supplier.add(req.con, req.body, (err, rows) => {
@@ -24,7 +32,7 @@ module.exports = {
 
 	delete: (req, res) => {
 		Supplier.delete(req.con, req.params.id, res, (err, rows) => {
-			if(err) res.send(err.sqlMessage, 400)
+			if(err) return res.send(err.sqlMessage, 400)
 			res.send('success.', 200)
 		})
 	}
