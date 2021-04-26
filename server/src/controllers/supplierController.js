@@ -24,7 +24,7 @@ module.exports = {
 
 	delete: (req, res) => {
 		Supplier.delete(req.con, req.params.id, res, (err, rows) => {
-			if(err) res.send(err.sqlMessage, 400)
+			if(err) return res.send(err.sqlMessage, 400)
 			res.send('success.', 200)
 		})
 	}
