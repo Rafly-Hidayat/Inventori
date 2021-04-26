@@ -5,6 +5,11 @@ module.exports = {
 		const query = "SELECT * FROM supplier"
 		con.query(query, callback)
 	},
+	
+	getById: (con, id, callback) => {
+		const query = `SELECT * FROM supplier WHERE kd_supplier = ${id}`
+		con.query(query, callback)
+	},
 
 	add: (con, data, callback) => {
 		const query = `INSERT INTO supplier SET

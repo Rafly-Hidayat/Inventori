@@ -7,6 +7,14 @@ module.exports = {
 			res.json({ data: rows })
 		})
 	},
+	
+	getById: (req, res) => {
+		Supplier.getById(req.con, req.params.id, (err, rows) => {
+			if(err) throw err
+			rows.length == 0 ? res.send("id tidak ditemukan.", 404) : res.json({ data: rows })
+			
+		})
+	},
 
 	add: (req, res) => {
 		Supplier.add(req.con, req.body, (err, rows) => {
