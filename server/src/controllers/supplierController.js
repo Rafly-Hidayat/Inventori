@@ -16,15 +16,15 @@ module.exports = {
 	},
 
 	update: (req, res) => {
-		Supplier.update(req.con, req.body, req.params.id, (err, rows) => {
+		Supplier.update(req.con, req.body, req.params.id, res, (err, rows) => {
 			if(err) throw err
 			res.send('success.', 200)
 		})
 	},
 
 	delete: (req, res) => {
-		Supplier.delete(req.con, req.params.id, (err, rows) => {
-			if(err) throw err
+		Supplier.delete(req.con, req.params.id, res, (err, rows) => {
+			if(err) res.send(err.sqlMessage, 400)
 			res.send('success.', 200)
 		})
 	}
