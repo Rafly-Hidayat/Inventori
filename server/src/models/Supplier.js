@@ -1,9 +1,10 @@
 const mysql = require('mysql')
+const pagination = require('../middleware/pagination')
 
 module.exports = {
-	getAll: (con, callback) => {
-		const query = "SELECT * FROM supplier"
-		con.query(query, callback)
+	getAll: (con, param, res) => {
+		const table = "supplier"
+		pagination(param, res, table)
 	},
 	
 	getById: (con, id, callback) => {
