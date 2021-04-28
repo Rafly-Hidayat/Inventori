@@ -11,7 +11,7 @@ var pool  = mysql.createPool({
 })
 
 function pagination(param, res, table, column){
-   if(param.page == null || param.limit == null) {
+   if(param.page == null || param.limit == null || param.limit == '' || param.page == '') {
        page = 1
        limit = 5
    } else {
@@ -37,12 +37,13 @@ function pagination(param, res, table, column){
 
            if(page > pageLimit) return res.send('not found.', 404)
            // query for fetching data with page number and offset
-           const prodsQuery = `select * from ${table} WHERE ${column[0]} OR  ${column[1]} OR ${column[2]} OR ${column[3]} OR ${column[4]} LIKE '%${search}%' ORDER BY ${sort} ASC LIMIT ${limit} OFFSET ${offset}`
+           const query = `select * from ${table} WHERE ${column[1]} LIKE '%${search}%' ORDER BY ${sort} ASC LIMIT ${limit} OFFSET ${offset}`
+
            pool.getConnection(function(err, connection) {
-                connection.query(prodsQuery, function (error, results) {
+                connection.query(query, function (error, results) {
                     // When done with the connection, release it.
                     connection.release();
-                        if (error) throw error;
+                      if (error) throw error;
                     // create payload
                     var jsonResult = {
                     'pages': `${page} of ${pageLimit}`,
