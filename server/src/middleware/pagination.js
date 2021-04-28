@@ -20,7 +20,7 @@ function pagination(param, res, table, column){
    }
    
    if(param.sort == null) {
-      return res.send("error", 400)
+      return res.send("error. sort parameter is required", 400)
    } else if(param.sort == ''){
        sort = column[0]
    } else {
@@ -44,6 +44,8 @@ function pagination(param, res, table, column){
                     // When done with the connection, release it.
                     connection.release();
                       if (error) throw error;
+
+                    if(results.length == 0) return res.send('no data.')
                     // create payload
                     var jsonResult = {
                     'pages': `${page} of ${pageLimit}`,

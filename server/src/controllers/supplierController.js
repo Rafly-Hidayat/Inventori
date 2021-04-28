@@ -16,7 +16,7 @@ module.exports = {
 	add: (req, res) => {
 		Supplier.add(req.con, req.body, (err, rows) => {
 			if(err) throw err
-			res.send('add new supplier success.', 200)
+			res.send('add new supplier success.', 201)
 		})
 	},
 
