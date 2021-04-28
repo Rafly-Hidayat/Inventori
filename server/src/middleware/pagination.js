@@ -11,25 +11,13 @@ var pool  = mysql.createPool({
 })
 
 function pagination(param, res, table, column){
-<<<<<<< HEAD
    if(param.page == null || param.limit == null || param.limit == '' || param.page == '') {
-=======
-   if(param.page == null || param.limit == null) {
->>>>>>> origin/main
        page = 1
        limit = 5
    } else {
        page = parseInt(param.page)
        limit = parseInt(param.limit)
    }
-
-   if(param.sort == ''){
-    sort = column[0]
-   } else {
-    sort = param.sort
-   }
-
-   const search = param.search
    
    if(param.sort == null) {
       return res.send("error", 400)
@@ -49,11 +37,10 @@ function pagination(param, res, table, column){
 
            if(page > pageLimit) return res.send('not found.', 404)
            // query for fetching data with page number and offset
-           const query = `select * from ${table} WHERE ${column[0]} OR  ${column[1]} OR ${column[2]} OR ${column[3]} OR ${column[4]} OR ${column[5]} LIKE '%${search}%' ORDER BY ${sort} ASC LIMIT ${limit} OFFSET ${offset}`
-           
+           const query = `select * from ${table} WHERE ${column[1]} LIKE '%${search}%' ORDER BY ${sort} ASC LIMIT ${limit} OFFSET ${offset}`
+
            pool.getConnection(function(err, connection) {
                 connection.query(query, function (error, results) {
-                  console.log(query)
                     // When done with the connection, release it.
                     connection.release();
                       if (error) throw error;

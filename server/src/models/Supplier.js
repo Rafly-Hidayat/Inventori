@@ -4,7 +4,7 @@ const pagination = require('../middleware/pagination')
 module.exports = {
 	getAll: (con, param, res) => {
 		const table = "supplier"
-		const column = ["nama_supplier", "alamat", "alamat", "alamat", "alamat", "alamat"]
+		const column = ["kd_supplier", "nama_supplier"]
 		pagination(param, res, table, column)
 	},
 	
