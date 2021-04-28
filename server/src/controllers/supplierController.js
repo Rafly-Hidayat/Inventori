@@ -2,10 +2,7 @@ const Supplier = require('../models/Supplier')
 
 module.exports = {
 	getAll: (req, res) => {
-		Supplier.getAll(req.con, (err, rows) => {
-			if(err) throw err
-			res.json({ data: rows })
-		})
+		Supplier.getAll(req.con, req.query, res)
 	},
 	
 	getById: (req, res) => {

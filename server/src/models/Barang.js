@@ -1,30 +1,11 @@
 const mysql = require('mysql')
+const pagination = require('../middleware/pagination')
 
 module.exports = {
-	getAll: (con, param , res, callback) => {
-		const query = "Select count(*) as TotalCount from barang"
-		con.query(query, (err, rows) => {
-			if(err) return err
-			totalCount = rows[0].TotalCount			
-			if(param.page == null && param.limit == null) {
-				startNum = 1;
-				LimitNum = 5;
-			} else {
-				startNum = parseInt(param.page)
-				LimitNum = parseInt(param.limit)
-			}
-
-			let offset = (startNum - 1) * LimitNum
-	   		let endIndex = startNum * LimitNum
-	   		let pages = Math.ceil(totalCount/LimitNum)
-
-	   		if(startNum > pages) return res.send('not found.', 404)
-			var query = "Select * from ?? limit ? OFFSET ?"
-			//Mention table from where you want to fetch records example-users & send limit and start 
-			var table = ["barang",LimitNum,offset]
-			query = mysql.format(query, table)
-			con.query(query, callback)
-		})
+	getAll: (con, param, res) => {		
+		const table = "barang"
+		const column = ["nama_barang", "satuan", "harga_jual", "harga_beli", "stok", "status"]
+		pagination(param, res, table, column)
 	},
 
 	getById: (con, id, callback) => {
