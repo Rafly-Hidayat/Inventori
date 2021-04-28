@@ -22,11 +22,13 @@ app.use(function(req, res, next) {
 const dataRouter = require('./routes/dataRouter')
 const supplierRouter = require('./routes/supplierRouter')
 const authRouter = require('./routes/authRouter')
+const perusahaanRouter = require('./routes/perusahaanRouter')
 
 // use router
 app.use(dataRouter)
 app.use(supplierRouter)
 app.use(authRouter)
+app.use(perusahaanRouter)
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}!`)
