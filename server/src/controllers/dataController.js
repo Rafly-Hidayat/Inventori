@@ -2,9 +2,15 @@ const Barang = require('../models/Barang')
 
 module.exports = {
 	getAll: (req, res) => {
-		Barang.getAll(req.con, (err, rows) => {
-			if(err) throw err
-			res.json({ data: rows })
+		Barang.getAll(req.con, req.query, res, (err, rows) => {
+			const query = "Select count(*) as TotalCount from barang"
+			req.con.query(query, (err, results) => {
+				if(err) return err
+				totalCount = results[0].TotalCount	
+				var pages = Math.ceil(totalCount/parseInt(req.query.limit))
+				if(err) throw err
+				res.json({ pages: `${req.query.page} of ${pages}`, data: rows })
+			})
 		})
 	},
 
