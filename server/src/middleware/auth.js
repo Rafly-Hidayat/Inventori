@@ -1,8 +1,44 @@
 const con = require ('../config/db')
 const jwt = require ('jsonwebtoken')
-require('dotenv').config
+require('dotenv').config()
 
 module.exports = {
+
+    // register admin
+    register: (req, res) => {
+        con.beginTransaction( err => {
+            if (err) res.send(err.sqlMessage, 400)
+
+            const post = {
+                nama: req.body.nama,
+                email: req.body.email,
+                password: req.body.password
+            }
+
+            con.query('SELECT email FROM admin WHERE email = ?', [post.email], (err, rows) => {
+                if (err) res.send(err.sqlMessage, 400)
+
+                if (rows.length == 0){
+                    con.query('INSERT INTO admin SET ?', [post], err => {
+                        if (err) res.send(err.sqlMessage, 400)
+
+                        res.send("Berhasil menambahkan admin baru", 201)
+
+                        con.commit(err => {
+                            if (err) {
+                                res.send(err.sqlMessage, 400)
+                                con.rollback()
+                            }
+                        })
+                    })
+                } else {
+                    res.send("Email sudah terdaftar")
+                    con.rollback()
+                }
+            })
+
+        })
+    },
 
     login: (req, res) => {
         const post = {
@@ -23,7 +59,7 @@ module.exports = {
                     akses_token: token
                 }
     
-                con.query (`INSERT INTO akses_token SET ?`,[data], (err, rows) => {
+                con.query('INSERT INTO akses_token SET ?', [data], (e, rows) => {
                     if(err) return res.send(err.sqlMessage, 400)
                     res.json ({
                         status: true,
