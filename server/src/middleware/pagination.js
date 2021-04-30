@@ -44,6 +44,7 @@ function pagination(param, res, table, column){
                     // When done with the connection, release it.
                     connection.release();
                       if (error) throw error;
+                    if(results == 0) return res.send('not found.', 400)
                     // create payload
                     var jsonResult = {
                     'pages': `${page} of ${pageLimit}`,
