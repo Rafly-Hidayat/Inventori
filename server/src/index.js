@@ -23,12 +23,14 @@ const dataRouter = require('./routes/dataRouter')
 const supplierRouter = require('./routes/supplierRouter')
 const authRouter = require('./routes/authRouter')
 const perusahaanRouter = require('./routes/perusahaanRouter')
+const penjualanRouter = require('./routes/penjualanRouter')
 
 // use router
 app.use(dataRouter)
 app.use(supplierRouter)
 app.use(authRouter)
 app.use(perusahaanRouter)
+app.use(penjualanRouter)
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}!`)
