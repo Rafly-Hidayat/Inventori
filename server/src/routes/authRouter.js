@@ -6,7 +6,7 @@ const validation = require('../validator/auth/auth.validation')
 
     router.post('/login', validation.login, auth.login)
 
-    router.post('/register', validation.register, auth.register)
+    router.post('/registrasi', validation.register, auth.register)
 
     router.get('/inventori', verifikasi.verifikasiAdmin(), auth.inventori)
 
