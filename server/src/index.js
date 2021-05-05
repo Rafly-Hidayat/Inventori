@@ -24,6 +24,7 @@ const supplierRouter = require('./routes/supplierRouter')
 const authRouter = require('./routes/authRouter')
 const perusahaanRouter = require('./routes/perusahaanRouter')
 const adminRouter = require('./routes/adminRouter')
+const penjualanRouter = require('./routes/penjualanRouter')
 const pembelianRouter = require('./routes/pembelianRouter')
 
 // use router
@@ -32,6 +33,7 @@ app.use(supplierRouter)
 app.use(authRouter)
 app.use(perusahaanRouter)
 app.use(adminRouter)
+app.use(penjualanRouter)
 app.use(pembelianRouter)
 
 app.listen(port, () => {
