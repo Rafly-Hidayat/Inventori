@@ -6,11 +6,17 @@ module.exports = {
     },
 
     getAll : (con, data, limit, offset, callback) => {
+        const nama = con.query('SELECT nama FROM admin')
+        if(data.sort == '') {
+            sort = 'nama'
+        } else {
+            sort = data.sort
+        }
         const query = `SELECT kd_admin, nama, email, gambar FROM admin WHERE
                         kd_admin LIKE '%${data.search}%' OR
                         nama LIKE '%${data.search}%' OR
                         email LIKE '%${data.search}%'
-                        ORDER BY ${data.sort} ${data.order}
+                        ORDER BY ${sort} ${data.order}
                         LIMIT ${limit} OFFSET ${offset}`
         con.query(query, callback)
     },

@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const admincontroller = require('../controllers/adminController')
+const verifikasi = require('../middleware/verifikasi')
 
-
-    router.get('/admin', admincontroller.getAll)
+    router.get('/admin', verifikasi.verifikasiAdmin(), admincontroller.getAll)
 
     router.get('/admin/:id', admincontroller.getById)
 
