@@ -19,10 +19,11 @@ function pagination(param, res, table, column){
        limit = parseInt(param.limit)
    }
    
-   if(param.sort == null) {
-      return res.send("error", 400)
-   } else if(param.sort == ''){
-       sort = column[0]
+   if(param.sort == null || param.sort == '') {
+    //   return res.send("error", 400)
+      sort = column[0]
+//    } else if(param.sort == ''){
+//        sort = column[0]
    } else {
        sort = param.sort
    }

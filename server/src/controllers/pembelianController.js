@@ -10,6 +10,10 @@ module.exports = {
 			if(err) throw err
 			res.json(rows)
 		})
+	},
+
+	transaction: (req, res) => {
+		Pembelian.transaction(req.con, req.body, res)
 	}
 
 }
