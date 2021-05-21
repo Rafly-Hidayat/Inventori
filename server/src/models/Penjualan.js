@@ -36,28 +36,20 @@ module.exports = {
             
                 if(stok >= jumlah) {
                     con.query('INSERT INTO d_penjualan (kd_barang, kd_penjualan, jumlah, subtotal) VALUES (?,?,?,?)', [data.kd_barang,data.kd_penjualan,jumlah,subtotal], (e, result) => {
-                        if(e){
-                            con.rollback(() => {
-                            return res.send("Something bad happened. Successfully rollback.")	
-                            })
-                        }
-                    })
+                        if(e) return res.send("ERROR", 400)
 
-                    con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], (e,result) => {
-                        if(e){
-                            con.rollback(() => {
-                            return res.send("Something bad happened. Successfully rollback.")	          
-                            })
-                        }
-                    })
+                         con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], (e,result) => {
+                        	if(e) return res.send("ERROR", 400)
 
-                    con.commit((err) => {
-                        if(err){
-                            con.rollback(()=> {
-                                throw err
-                            })    				 		
-                        }
-                        return res.send("SUCCESS")
+                        	con.commit((e) => {
+                        		if(e){
+                            		con.rollback(()=> {
+                            			return res.send("ERROR", 400)
+                           	 		})    				 		
+                       			}
+                        		return res.send("SUCCESS")
+                    		})
+                    	})
                     })
 
                 } else {
