@@ -11,13 +11,21 @@ var pool  = mysql.createPool({
 })
 
 function pagination(param, res, table, column){
-   if(param.page == null || param.limit == null || param.limit == '' || param.page == '') {
-       page = 1
-       limit = 5
-   } else {
-       page = parseInt(param.page)
-       limit = parseInt(param.limit)
-   }
+    if(param.page == null) {
+        return res.send("error", 400)
+     } else if(param.page == ''){
+         page = column[0]
+     } else {
+         page = param.page
+     }
+
+     if(param.limit == null) {
+        return res.send("error", 400)
+     } else if(param.limit == ''){
+         limit = column[0]
+     } else {
+         limit = param.limit
+     }
    
    if(param.sort == null) {
       return res.send("error", 400)
