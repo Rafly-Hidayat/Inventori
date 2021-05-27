@@ -1,13 +1,36 @@
 // Import NPM
 const express = require('express')
 const cors = require('cors')
-
+const multer = require('multer')
+  
 // Import file
 const con = require('./config/db')
 
 const app = express()
 const port = 3000
 
+// setup multer
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  if( file.mimetype === 'image/png' || 
+      file.mimetype === 'image/jpg' || 
+      file.mimetype === 'image/jpeg' 
+    ){
+      cb(null, true)
+    } else {
+      cb(null, false)
+    }
+}
+
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('gambar'))
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cors())
