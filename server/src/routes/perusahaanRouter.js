@@ -5,8 +5,8 @@ const { perusahaanValidation } = require('../validator/perusahaan/perusahaan.val
 
 // Router perusahaan
 router.get('/perusahaan', perusahaanController.getAll)
-router.get('/perusahaan/:id', perusahaanController.getById)
+router.get('/perusahaan/:kd_perusahaan', perusahaanController.getById)
 router.post('/tambah/perusahaan', perusahaanValidation, perusahaanController.add)
-router.put('/ubah/perusahaan/:id', perusahaanValidation, perusahaanController.update)
-router.delete('/hapus/perusahaan/:id', perusahaanController.delete)
+router.put('/ubah/perusahaan/:kd_perusahaan', perusahaanValidation, perusahaanController.update)
+router.delete('/hapus/perusahaan/:kd_perusahaan', perusahaanController.delete)
 module.exports = router
