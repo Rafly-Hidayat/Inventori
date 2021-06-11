@@ -28,7 +28,7 @@ function pagination(param, res, table, column){
      }
    
    if(param.sort == null) {
-      return res.send("error", 400)
+      return res.send("error. sort parameter is required", 400)
    } else if(param.sort == ''){
        sort = column[0]
    } else {
