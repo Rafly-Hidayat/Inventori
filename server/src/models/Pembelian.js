@@ -89,12 +89,12 @@ module.exports = {
 									if(data.kd_supplier == kd_supplier) {
 										con.query(`SELECT total FROM barang_pembelian WHERE kd_pembelian = ?`, [kd_pembelian], (e, rows) => {
 											if(e) throw e
-											console.log("rows : " + rows)
 											let total = rows.map(function (obj) {
 												return parseInt(obj.total)
 											})
+											
 											let total_pembelian = total.reduce(function(a,b){ return a + b }, 0)
-											console.log(total, total_pembelian)
+
 											con.query('INSERT INTO pembelian SET kd_pembelian = ?, tgl_pembelian = ?, kd_admin = ?, kd_supplier = ?, total_pembelian = ?',[kd_pembelian, data.tgl_pembelian, kd_admin, kd_supplier, total_pembelian], e => {
 												if(e) throw e
 

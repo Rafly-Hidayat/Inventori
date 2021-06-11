@@ -78,73 +78,76 @@ module.exports = {
 							let random = Math.floor(Math.random() * 100)
 							let kd_penjualan = new Date(data.tgl_penjualan).getTime().toString().slice(0, 5) + random
 							kd_penjualan.toString()
-							console.log(kd_penjualan)
-							con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
-								if(e) throw e
-								console.log("kd_penjualan :" + kd_penjualan)
-								console.log("rows :" + rows)
-								let total = rows.map(function(obj) {
-									return parseInt(obj.subtotal)
-								})
-								console.log(total)
-								let total_penjualan = total.reduce(function(a,b){
-									return a + b 
-								}, 0)
 								
-								con.query("INSERT INTO penjualan SET kd_penjualan = ?, tgl_penjualan = ?, kd_admin = ?, dibayar = ?, total_penjualan = ?", [kd_penjualan, data.tgl_penjualan, kd_admin, data.dibayar, total_penjualan], e => {
+							con.query("INSERT INTO penjualan SET kd_penjualan = ?, tgl_penjualan = ?, kd_admin = ?, dibayar = ?", [kd_penjualan, data.tgl_penjualan, kd_admin, data.dibayar], e => {
+								if(e) throw e
+
+								con.query("SELECT kd_penjualan FROM penjualan WHERE kd_penjualan = ?",[kd_penjualan], (e, result) => {
 									if(e) throw e
+									let kd_penjualan = result.map(obj => {
+										return obj.kd_penjualan
+									})
 
 									con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
+										if(e) throw e
 
-										con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
-                        					if(e) throw e
-                    					})
+										con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
+											if(e) throw e
+											let subtotal = rows.map(function(obj) {
+												return parseInt(obj.subtotal)
+											})
+											let total_penjualan = subtotal.reduce(function(a,b){
+												return a + b 
+											}, 0)
 
-										con.commit(e => {
-											if(e) con.rollback()
-											return res.send("SUCCESS")
+											con.query("UPDATE penjualan SET total_penjualan = ? WHERE kd_penjualan = ?", [total_penjualan, kd_penjualan], e => {
+												if(e) throw e
+
+												con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
+													if(e) throw e
+													
+													con.commit(e => {
+														if(e) con.rollback()
+														return res.send("SUCCESS")
+													})
+												})
+											})
 										})
 									})
 								})
 							})
 						} else {
-						 	con.query("SELECT kd_penjualan FROM penjualan WHERE tgl_penjualan = ?", [data.tgl_penjualan.toString()], (e, result) => {
-								if(e) throw e 
-								console.log(result)
+							con.query("SELECT kd_penjualan FROM penjualan WHERE tgl_penjualan = ?", [data.tgl_penjualan.toString()], (e, result) => {
+								if(e) throw e
 								let kd_penjualan = result.map(function(obj){
 									return obj.kd_penjualan
 								})
+								con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
 
-								con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
-					 			if(e) throw e
-					 				console.log(rows)
-						 			let total = rows.map(function(obj) {
-						 				return parseInt(obj.subtotal)
-						 			})	
-						 			let total_penjualan = total.reduce(function(a,b){
-						 				return a + b 
-						 			}, 0)
-						 			console.log(`total : ${total}, total_penjualan : ${total_penjualan}`)
+									con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
+									if(e) throw e
+										let subtotal = rows.map(function(obj) {
+											return parseInt(obj.subtotal)
+										})	
+										let total_penjualan = subtotal.reduce(function(a,b){
+											return a + b 
+										}, 0)
 
-						 			con.query("UPDATE penjualan SET total_penjualan = ?  WHERE tgl_penjualan = ?", [total_penjualan, data.tgl_penjualan.toString()], e => {
-
-							 			con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
+										con.query("UPDATE penjualan SET total_penjualan = ?  WHERE tgl_penjualan = ?", [total_penjualan, data.tgl_penjualan.toString()], e => {
 
 							 				con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
 	                        					if(e) throw e
+
+												con.commit(e => {
+													if(e) con.rollback()
+													return res.send("SUCCESS")
+												})
 	                     					})
-
-							 				con.commit(e => {
-							 					if(e) con.rollback()
-							 					return res.send("SUCCESS")
-							 				})
 							 			})
-							 		})	
-						 		
+							 		})
 						 		})
-
 						 	})
-						 }
+						}
                     })
 
                 } else {
