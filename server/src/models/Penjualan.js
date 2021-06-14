@@ -33,7 +33,20 @@ module.exports = {
 
     getDetailById: (con, id_pembelian, callback) => {
 		con.query(`SELECT * FROM d_pembelian WHERE id_pembelian = ${id_pembelian}`, callback)
-	},
+    },
+
+    getLaporan: (con, data, callback) => {
+		con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${data.awal}' AND '${data.akhir}'`, callback)
+    },
+    
+    getDataLaporan : (con, data, awal, akhir, limit, offset, callback) => {
+		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
+		data.orderBy == '' || data.orderBy == null ? orderBy = 'tgl_penjualan' : orderBy = data.orderBy
+		data.search == null ? search = '' : search = data.search
+
+        con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${awal}' AND '${akhir}'`, callback)
+
+    },
 
     transaction: (con, data, res) => {
         con.beginTransaction((e) => {

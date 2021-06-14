@@ -43,7 +43,25 @@ module.exports = {
 			if(err) throw err
 			res.json(rows)
 		})
-	},
+    },
+    
+    getLaporan: (req, res) => {
+        let page = req.query.page || 1
+        let limit = req.query.limit || 5
+        let offset = ( page - 1 ) * limit
+        let awal = req.query.awal
+        let akhir = req.query.akhir
+        
+        Penjualan.getDataLaporan(req.con, req.query, awal, akhir, limit, offset, (err, rows) => {
+            if(err) throw (err)
+            res.json({result:rows.length, data: rows})
+            // Penjualan.getLaporan(req.con, req.query, (err, results) => {
+            //     if(err) throw (err)
+            //     const pageLimit = Math.ceil(results.length/parseInt(limit))
+            //     res.json({page: `${page} of ${pageLimit}`, result:rows.length, data: rows})
+            // })
+        })
+    },
 
     transaction: (req, res) => {
         Penjualan.transaction(req.con, req.body, res)
