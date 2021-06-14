@@ -17,7 +17,7 @@ module.exports = {
 			if(err){
 				return res.send(err.sqlMessage, 400)
 			}
-			res.send('add new data success.', 200)
+			res.send('add new data success.', 201)
 		})
 	},
 
