@@ -1,14 +1,14 @@
 const pagination = require('../middleware/pagination')
 
-module.exports = {
+module.exports = {  
     getAll: (con, param, res) => {
-        const table = "penjualan"
+        const table = "t_penjualan"
         const column = ["kd_penjualan", "tgl_penjualan"]
         pagination(param, res, table, column)
     },
 
-    getById: (con, kd_penjualan, callback) => {
-        const query = `SELECT * FROM penjualan WHERE kd_penjualan = '${kd_penjualan}'`
+    getById: (con, id_penjualan, callback) => {
+        const query = `SELECT * FROM t_penjualan WHERE id_penjualan = '${id_penjualan}'`
 		con.query(query, callback)
     },
 
@@ -43,7 +43,7 @@ module.exports = {
             let random = Math.floor(Math.random() * 100)
             let kd_penjualan = new Date(data.tgl_penjualan).getTime().toString().slice(0, 5) + random
             kd_penjualan.toString()
-            console.log(kd_penjualan)
+            
                 if(stok >= jumlah) {
                     
                     con.query('INSERT INTO penjualan (kd_penjualan, tgl_penjualan, kd_admin, dibayar, total_penjualan) VALUES (?,?,?,?,?)', [kd_penjualan,data.tgl_penjualan,admin,data.dibayar, data.dibayar], (e, result) => {
@@ -53,6 +53,13 @@ module.exports = {
                     con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], (e,result) => {
                         if(e) throw e
                     })
+
+                    con.query('INSERT INTO d_penjualan (kd_penjualan, kd_barang, jumlah, subtotal) VALUES (?,?,?,?)', [kd_penjualan, data.kd_barang, jumlah, subtotal], (e,result) => {
+                        if(e) throw e
+                    })
+
+                    // input data ke tabel t_penjualan
+                    con.query('INSERT INTO t_penjualan (kd_penjualan, kd_barang, tgl_penjualan, jumlah, kd_admin, dibayar, total_penjualan) VALUES (?,?,?,?,?,?,?)', [kd_penjualan, data.kd_barang, data.tgl_penjualan, jumlah, admin, data.dibayar, data.dibayar])
 
                     con.commit((err) => {
                         if(e) throw e
