@@ -54,6 +54,15 @@ module.exports = {
                 let token = jwt.sign({rows}, process.env.SECRET, {expiresIn: 1000})
 
                 const kd_admin = rows[0].kd_admin
+                let nama = rows.map(obj => {
+                    return obj.nama
+                })
+                let email = rows.map(obj => {
+                    return obj.email
+                })
+                let gambar = rows.map(obj => {
+                    return obj.gambar
+                })
 
                 const data = {
                     kd_admin: kd_admin,
@@ -66,7 +75,10 @@ module.exports = {
                         status: true,
                         message: 'Berhasil menggenerate token',
                         token: token,
-                        kd_admin: kd_admin
+                        kd_admin: kd_admin,
+                        nama : nama,
+                        email : email,
+                        gambar : gambar
                     })
                 })
             } else {

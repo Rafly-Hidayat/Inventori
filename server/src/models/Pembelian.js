@@ -10,7 +10,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_pembelian' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM pembelian WHERE kd_pembelian LIKE '%${search}%' OR tgl_pembelian LIKE '%${search}%' OR kd_admin LIKE '%${search}%' OR kd_supplier LIKE '%${search}%' OR total_pembelian LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM pembelian WHERE kd_pembelian LIKE '%${search}%' OR tgl_pembelian LIKE '%${search}%' OR kd_admin LIKE '%${search}%' OR kd_supplier LIKE '%${search}%' OR total_pembelian LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
 	getById: (con, kd_pembelian, callback) => {
@@ -26,7 +26,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'id_pembelian' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM d_pembelian WHERE id_pembelian LIKE '%${search}%' OR kd_pembelian LIKE '%${search}%' OR kd_barang_beli LIKE '%${search}%' OR jumlah LIKE '%${search}%' OR subtotal LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM d_pembelian WHERE id_pembelian LIKE '%${search}%' OR kd_pembelian LIKE '%${search}%' OR kd_barang_beli LIKE '%${search}%' OR jumlah LIKE '%${search}%' OR subtotal LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
 	getDetailById: (con, id_pembelian, callback) => {
@@ -42,7 +42,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_barang_beli' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM barang_pembelian WHERE kd_barang_beli LIKE '%${search}%' OR kd_pembelian LIKE '%${search}%' OR nama_barang_beli LIKE '%${search}%' OR satuan LIKE '%${search}%' OR harga_beli LIKE '%${search}%' OR item LIKE '%${search}%' OR total LIKE '%${search}%' OR status LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM barang_pembelian WHERE kd_barang_beli LIKE '%${search}%' OR kd_pembelian LIKE '%${search}%' OR nama_barang_beli LIKE '%${search}%' OR satuan LIKE '%${search}%' OR harga_beli LIKE '%${search}%' OR item LIKE '%${search}%' OR total LIKE '%${search}%' OR status LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
 	getBarangById: (con, kd_barang_beli, callback) => {
