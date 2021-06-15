@@ -52,9 +52,10 @@ module.exports = {
         let awal = req.query.awal
         let akhir = req.query.akhir
         
-        Penjualan.getDataLaporan(req.con, req.query, awal, akhir, limit, offset, (err, rows) => {
+        Penjualan.getDataLaporan(req.con, res, req.query, awal, akhir, limit, offset, (err, rows) => {
             if(err) throw (err)
-            res.json({result:rows.length, data: rows})
+            // console.log(rows)
+            // res.json({result:rows.length, data: rows})
             // Penjualan.getLaporan(req.con, req.query, (err, results) => {
             //     if(err) throw (err)
             //     const pageLimit = Math.ceil(results.length/parseInt(limit))

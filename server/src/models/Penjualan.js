@@ -39,12 +39,23 @@ module.exports = {
 		con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${data.awal}' AND '${data.akhir}'`, callback)
     },
     
-    getDataLaporan : (con, data, awal, akhir, limit, offset, callback) => {
+    getDataLaporan : (con, res, data, awal, akhir, limit, offset, callback) => {
 		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'tgl_penjualan' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${awal}' AND '${akhir}'`, callback)
+        con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${awal}' AND '${akhir}'`, (err, rows) => {
+			if(err) throw err
+			let total_penjualan = rows.map((obj) => {
+				return obj.total_penjualan
+			})
+
+			let total = total_penjualan.reduce((a,b) => {
+				return a + b
+			}, 0)
+			
+			res.send({result: rows.length, data: rows, total: total})
+		})
 
     },
 
@@ -84,7 +95,7 @@ module.exports = {
             	let subtotal  = harga[0] * jumlah
             
                 if(stok >= jumlah) {
-
+					
                 	con.query("SELECT tgl_penjualan FROM penjualan WHERE tgl_penjualan = ?",[data.tgl_penjualan], (e, result) => {
 						if(e) throw e
 						

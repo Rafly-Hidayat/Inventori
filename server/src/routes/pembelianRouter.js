@@ -13,6 +13,8 @@ const { pembelianValidation } = require('../validator/pembelian/pembelian.valida
 
     router.get('/barang_pembelian', pembelianController.getAllBarang)
 
+    router.get('/laporan/pembelian', pembelianController.getLaporan)
+
     router.get('/barang_pembelian/:kd_barang_beli', pembelianController.getBarangById)
 
     router.post('/pembelian', pembelianValidation, pembelianController.transaction)
