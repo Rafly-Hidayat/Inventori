@@ -9,7 +9,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_perusahaan' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM perusahaan WHERE kd_perusahaan LIKE '%${search}%' OR nama_perusahaan LIKE '%${search}%' OR alamat LIKE '%${search}%' OR pemilik LIKE '%${search}%' OR kota LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM perusahaan WHERE kd_perusahaan LIKE '%${search}%' OR nama_perusahaan LIKE '%${search}%' OR alamat LIKE '%${search}%' OR pemilik LIKE '%${search}%' OR kota LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
 	getById: (con, kd_perusahaan, callback) => {

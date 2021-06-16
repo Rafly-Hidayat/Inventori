@@ -9,7 +9,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_supplier' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM supplier WHERE kd_supplier LIKE '%${search}%' OR nama_supplier LIKE '%${search}%' OR alamat LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM supplier WHERE kd_supplier LIKE '%${search}%' OR nama_supplier LIKE '%${search}%' OR alamat LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
 	getById: (con, kd_supplier, callback) => {
@@ -28,11 +28,19 @@ module.exports = {
 		})
 	},
 
-	delete: (con, id, res, callback) => {
-		con.query(`SELECT * FROM supplier WHERE kd_supplier = ${id}`, (e, rows) => {
+	delete: (con, kd_supplier, res, callback) => {
+		con.query(`SELECT * FROM supplier WHERE kd_supplier = ${kd_supplier}`, (e, rows) => {
 			if(e) throw e
 			if(rows == 0) return res.send('id supplier tidak ditemukan.', 404)
-			con.query(`DELETE FROM supplier WHERE kd_supplier = ${id}`, callback)
+
+			con.query(`SELECT kd_supplier FROM pembelian WHERE kd_supplier = ${kd_supplier}`, (e, result)=> {
+				if(e) throw e
+				if(result.length == 0){
+					con.query(`DELETE FROM supplier WHERE kd_supplier = ${kd_supplier}`, callback)
+				} else {
+					res.send('kd_supplier sudah terpakai')
+				}
+			})
 		})
 	}
 

@@ -10,7 +10,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_penjualan' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM penjualan WHERE kd_penjualan LIKE '%${search}%' OR tgl_penjualan LIKE '%${search}%' OR kd_admin LIKE '%${search}%' OR dibayar LIKE '%${search}%' OR total_penjualan LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM penjualan WHERE kd_penjualan LIKE '%${search}%' OR tgl_penjualan LIKE '%${search}%' OR kd_admin LIKE '%${search}%' OR dibayar LIKE '%${search}%' OR total_penjualan LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
 
     },
 
@@ -28,7 +28,7 @@ module.exports = {
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'id_penjualan' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
-        con.query(`SELECT * FROM d_penjualan WHERE id_penjualan LIKE '%${search}%' OR kd_penjualan LIKE '%${search}%' OR kd_barang LIKE '%${search}%' OR jumlah LIKE '%${search}%' OR subtotal LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+        con.query(`SELECT * FROM d_penjualan WHERE id_penjualan LIKE '%${search}%' OR kd_penjualan LIKE '%${search}%' OR kd_barang LIKE '%${search}%' OR jumlah LIKE '%${search}%' OR subtotal LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
     },
 
     getDetailById: (con, id_pembelian, callback) => {
