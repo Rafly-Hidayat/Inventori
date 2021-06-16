@@ -17,7 +17,7 @@ module.exports = {
     },
 
     getById: (req, res) => {
-        Penjualan.getById(req.con, req.params.kd_penjualan, (err, rows) => {
+        Penjualan.getById(req.con, req.params.id_penjualan, (err, rows) => {
             if(err) throw err
 			rows.length == 0 ? res.send('id barang tidak ditemukan.', 404) : res.json({ data: rows })
         })
@@ -43,7 +43,26 @@ module.exports = {
 			if(err) throw err
 			res.json(rows)
 		})
-	},
+    },
+    
+    getLaporan: (req, res) => {
+        let page = req.query.page || 1
+        let limit = req.query.limit || 5
+        let offset = ( page - 1 ) * limit
+        let awal = req.query.awal
+        let akhir = req.query.akhir
+        
+        Penjualan.getDataLaporan(req.con, res, req.query, awal, akhir, limit, offset, (err, rows) => {
+            if(err) throw (err)
+            // console.log(rows)
+            // res.json({result:rows.length, data: rows})
+            // Penjualan.getLaporan(req.con, req.query, (err, results) => {
+            //     if(err) throw (err)
+            //     const pageLimit = Math.ceil(results.length/parseInt(limit))
+            //     res.json({page: `${page} of ${pageLimit}`, result:rows.length, data: rows})
+            // })
+        })
+    },
 
     transaction: (req, res) => {
         Penjualan.transaction(req.con, req.body, res)

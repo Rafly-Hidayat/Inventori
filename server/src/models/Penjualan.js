@@ -3,18 +3,19 @@ const pagination = require('../middleware/pagination')
 module.exports = {
      get: (con,callback) => {
 		con.query("SELECT * FROM penjualan", callback)
-	},
-
+    },
+    
 	getAll : (con, data, limit, offset, callback) => {
 		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
 		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_penjualan' : orderBy = data.orderBy
 		data.search == null ? search = '' : search = data.search
 
         con.query(`SELECT * FROM penjualan WHERE kd_penjualan LIKE '%${search}%' OR tgl_penjualan LIKE '%${search}%' OR kd_admin LIKE '%${search}%' OR dibayar LIKE '%${search}%' OR total_penjualan LIKE '%${search}%' ORDER BY ${orderBy} ${sort} LIMIT ${limit} OFFSET ${offset}`, callback)
+
     },
 
-    getById: (con, kd_penjualan, callback) => {
-        const query = `SELECT * FROM penjualan WHERE kd_penjualan = '${kd_penjualan}'`
+    getById: (con, id_penjualan, callback) => {
+        const query = `SELECT * FROM t_penjualan WHERE id_penjualan = '${id_penjualan}'`
 		con.query(query, callback)
     },
 
@@ -32,7 +33,31 @@ module.exports = {
 
     getDetailById: (con, id_pembelian, callback) => {
 		con.query(`SELECT * FROM d_pembelian WHERE id_pembelian = ${id_pembelian}`, callback)
-	},
+    },
+
+    getLaporan: (con, data, callback) => {
+		con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${data.awal}' AND '${data.akhir}'`, callback)
+    },
+    
+    getDataLaporan : (con, res, data, awal, akhir, limit, offset, callback) => {
+		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
+		data.orderBy == '' || data.orderBy == null ? orderBy = 'tgl_penjualan' : orderBy = data.orderBy
+		data.search == null ? search = '' : search = data.search
+
+        con.query(`SELECT * FROM penjualan WHERE tgl_penjualan BETWEEN '${awal}' AND '${akhir}'`, (err, rows) => {
+			if(err) throw err
+			let total_penjualan = rows.map((obj) => {
+				return obj.total_penjualan
+			})
+
+			let total = total_penjualan.reduce((a,b) => {
+				return a + b
+			}, 0)
+			
+			res.send({result: rows.length, data: rows, total: total})
+		})
+
+    },
 
     transaction: (con, data, res) => {
         con.beginTransaction((e) => {
@@ -70,7 +95,7 @@ module.exports = {
             	let subtotal  = harga[0] * jumlah
             
                 if(stok >= jumlah) {
-
+					
                 	con.query("SELECT tgl_penjualan FROM penjualan WHERE tgl_penjualan = ?",[data.tgl_penjualan], (e, result) => {
 						if(e) throw e
 						

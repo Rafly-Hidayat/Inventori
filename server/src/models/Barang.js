@@ -2,11 +2,18 @@ const mysql = require('mysql')
 const pagination = require('../middleware/pagination')
 
 module.exports = {
-	getAll: (con, param, res) => {  
-		const table = "barang"
-		const column = ["kd_barang", "nama_barang"]
-		pagination(param, res, table, column)
-	},
+	get: (con,callback) => {
+		con.query("SELECT * FROM barang", callback)
+    },
+    
+	getAll : (con, data, limit, offset, callback) => {
+		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
+		data.orderBy == '' || data.orderBy == null ? orderBy = 'kd_barang' : orderBy = data.orderBy
+		data.search == null ? search = '' : search = data.search
+
+        con.query(`SELECT * FROM barang WHERE kd_barang LIKE '%${search}%' OR nama_barang LIKE '%${search}%' OR satuan LIKE '%${search}%' OR status LIKE '%${search}%' OR stok LIKE '%${search}%' LIMIT ${limit} OFFSET ${offset}`, callback)
+
+    },
 
 	getById: (con, id, callback) => {
 		const query = `SELECT * FROM barang WHERE kd_barang = '${id}'`

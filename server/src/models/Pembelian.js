@@ -49,6 +49,26 @@ module.exports = {
 		con.query(`SELECT * FROM barang_pembelian WHERE kd_barang_beli = ${kd_barang_beli}`, callback)
 	},
 
+	getDataLaporan : (con, res, data, awal, akhir, limit, offset, callback) => {
+		data.sort == '' || data.sort == null ? sort = 'asc' : sort = data.sort
+		data.orderBy == '' || data.orderBy == null ? orderBy = 'tgl_penjualan' : orderBy = data.orderBy
+		data.search == null ? search = '' : search = data.search
+
+        con.query(`SELECT * FROM pembelian WHERE tgl_pembelian BETWEEN '${awal}' AND '${akhir}'`, (err, rows) => {
+			if(err) throw err
+			let total_pembelian = rows.map((obj) => {
+				return obj.total_pembelian
+			})
+
+			let total = total_pembelian.reduce((a,b) => {
+				return a + b
+			}, 0)
+			
+			res.send({result: rows.length, data: rows, total: total})
+		})
+
+    },
+
 	transaction: (con, data, res) => {
 		con.beginTransaction(e => {
 			if(e) throw e

@@ -11,6 +11,8 @@ router.get('/detail/penjualan', penjualanController.getAllDetail)
 
 router.get('/detail/penjualan/:id_penjualan', penjualanController.getDetailById)
 
+router.get('/laporan/penjualan', penjualanController.getLaporan)
+
 router.post('/penjualan', addPenjualanValidation, penjualanController.transaction)
 
 module.exports = router

@@ -2,7 +2,18 @@ const Barang = require('../models/Barang')
 
 module.exports = {
 	getAll: (req, res) => {
-		Barang.getAll(req.con, req.query, res)
+		let page = req.query.page || 1
+        let limit = req.query.limit || 3
+        let offset = ( page - 1 ) * limit
+        
+        Barang.getAll(req.con, req.query, limit, offset, (err, rows) => {
+            if(err) throw (err)
+            Barang.get(req.con, (err, results) => {
+                if(err) throw (err)
+                const pageLimit = Math.ceil(results.length/parseInt(limit))
+                res.json({page: `${page} of ${pageLimit}`, result:rows.length, data: rows})
+            })
+        })
 	},
 
 	getById: (req, res) => {
