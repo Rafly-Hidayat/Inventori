@@ -19,7 +19,7 @@ module.exports = {
 	getById: (req, res) => {
 		Pembelian.getById(req.con, req.params.kd_pembelian, (err, rows) => {
 			if(err) throw err
-			res.json(rows)
+            rows.length == 0 ? res.send('kd_pembelian tidak ditemukan.', 404) : res.json({ data: rows })
 		})
 	},
 
@@ -39,9 +39,9 @@ module.exports = {
     },
 
 	getDetailById: (req, res) => {
-		Pembelian.getDetailById(req.con, req.params.kd_pembelian, (err, rows) => {
+		Pembelian.getDetailById(req.con, req.params.id_pembelian, (err, rows) => {
 			if(err) throw err
-			res.json(rows)
+            rows.length == 0 ? res.send('id_pembelian tidak ditemukan.', 404) : res.json({ data: rows })
 		})
 	},
 
@@ -61,9 +61,9 @@ module.exports = {
     },
 
 	getBarangById: (req, res) => {
-		Pembelian.getBarangById(req.con, req.params.kd_pembelian, (err, rows) => {
+		Pembelian.getBarangById(req.con, req.params.kd_barang_beli, (err, rows) => {
 			if(err) throw err
-			res.json(rows)
+            rows.length == 0 ? res.send('kd_barang_beli tidak ditemukan.', 404) : res.json({ data: rows })
 		})
     },
     
@@ -76,13 +76,6 @@ module.exports = {
         
         Pembelian.getDataLaporan(req.con, res, req.query, awal, akhir, limit, offset, (err, rows) => {
             if(err) throw (err)
-            // console.log(rows)
-            // res.json({result:rows.length, data: rows})
-            // Penjualan.getLaporan(req.con, req.query, (err, results) => {
-            //     if(err) throw (err)
-            //     const pageLimit = Math.ceil(results.length/parseInt(limit))
-            //     res.json({page: `${page} of ${pageLimit}`, result:rows.length, data: rows})
-            // })
         })
     },
 

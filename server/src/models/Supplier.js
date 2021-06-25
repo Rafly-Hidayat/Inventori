@@ -23,7 +23,7 @@ module.exports = {
 	update: (con, data, kd_supplier, res, callback) => {	
 		con.query(`SELECT * FROM supplier WHERE kd_supplier = ${kd_supplier}`, (e, rows) => {
 			if(e) throw e
-			if(rows == 0) return res.send('id supplier tidak ditemukan.', 404)	
+			if(rows == 0) return res.send('kd_supplier tidak ditemukan.', 404)	
 			con.query(`UPDATE supplier SET nama_supplier = '${data.nama_supplier}', alamat = '${data.alamat}' WHERE kd_supplier = ${kd_supplier}`, callback)
 		})
 	},
@@ -31,7 +31,7 @@ module.exports = {
 	delete: (con, kd_supplier, res, callback) => {
 		con.query(`SELECT * FROM supplier WHERE kd_supplier = ${kd_supplier}`, (e, rows) => {
 			if(e) throw e
-			if(rows == 0) return res.send('id supplier tidak ditemukan.', 404)
+			if(rows == 0) return res.send('kd_supplier tidak ditemukan.', 404)
 
 			con.query(`SELECT kd_supplier FROM pembelian WHERE kd_supplier = ${kd_supplier}`, (e, result)=> {
 				if(e) throw e

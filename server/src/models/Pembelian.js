@@ -194,7 +194,7 @@ module.exports = {
 
 															con.commit(e => {
 																if(e) con.rollback()
-																return res.send("SUCCESS")
+																return res.json({error: false, message: "SUCCESS"})
 															})
 														})
 													})
@@ -203,7 +203,7 @@ module.exports = {
 
 										} else {
 											con.rollback()
-											return res.send("kd_supplier is not found");
+											return res.json({error: true, message:"kd_supplier is not found"});
 										}
 
 									})
