@@ -1,4 +1,4 @@
-const pagination = require('../middleware/pagination')
+const mysql = require ('mysql')
 
 module.exports = {
      get: (con,callback) => {
@@ -76,8 +76,7 @@ module.exports = {
                 let harga = result.map(function(obj) {
                     return parseInt(obj.harga_jual)
                 }) 
-            con.query(`SELECT kd_admin FROM akses_token`, (err, result) => 
-            {
+            con.query(`SELECT kd_admin FROM akses_token`, (err, result) => {
                 if(err) throw err
                 let kd_admin = result.map((obj) => {
                     return parseInt(obj.kd_admin)
@@ -93,92 +92,123 @@ module.exports = {
 
             	let jumlah = parseInt(data.quantity)
             	let subtotal  = harga[0] * jumlah
-            
-                if(stok >= jumlah) {
-					
-                	con.query("SELECT tgl_penjualan FROM penjualan WHERE tgl_penjualan = ?",[data.tgl_penjualan], (e, result) => {
-						if(e) throw e
+
+			con.query('SELECT status FROM barang WHERE kd_barang = ?', [data.kd_barang], (e, result) => {
+				if(e) throw e
+				let status = result.map((obj) => {
+					return obj.status
+				})
+
+			con.query('SELECT kd_barang FROM barang WHERE kd_barang = ?', [data.kd_barang], (e, result) => {
+				if(e) throw e
+
+				if(result.length == 1) {
+
+					if(status == 1) {
+
+						if(stok >= jumlah) {
 						
-						if(result.length == 0){
-							let random = Math.floor(Math.random() * 100)
-							let kd_penjualan = new Date(data.tgl_penjualan).getTime().toString().slice(0, 5) + random
-							kd_penjualan.toString()
-								
-							con.query("INSERT INTO penjualan SET kd_penjualan = ?, tgl_penjualan = ?, kd_admin = ?, dibayar = ?", [kd_penjualan, data.tgl_penjualan, kd_admin, data.dibayar], e => {
+							con.query("SELECT tgl_penjualan FROM penjualan WHERE tgl_penjualan = ?",[data.tgl_penjualan], (e, result) => {
 								if(e) throw e
-
-								con.query("SELECT kd_penjualan FROM penjualan WHERE kd_penjualan = ?",[kd_penjualan], (e, result) => {
-									if(e) throw e
-									let kd_penjualan = result.map(obj => {
-										return obj.kd_penjualan
-									})
-
-									con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
+								
+								if(result.length == 0){
+									let random = Math.floor(Math.random() * 100)
+									let kd_penjualan = new Date(data.tgl_penjualan).getTime().toString().slice(0, 5) + random
+									kd_penjualan.toString()
+										
+									con.query("INSERT INTO penjualan SET kd_penjualan = ?, tgl_penjualan = ?, kd_admin = ?", [kd_penjualan, data.tgl_penjualan, kd_admin], e => {
 										if(e) throw e
-
-										con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
+		
+										con.query("SELECT kd_penjualan FROM penjualan WHERE kd_penjualan = ?",[kd_penjualan], (e, result) => {
 											if(e) throw e
-											let subtotal = rows.map(function(obj) {
-												return parseInt(obj.subtotal)
+											let kd_penjualan = result.map(obj => {
+												return obj.kd_penjualan
 											})
-											let total_penjualan = subtotal.reduce(function(a,b){
-												return a + b 
-											}, 0)
-
-											con.query("UPDATE penjualan SET total_penjualan = ? WHERE kd_penjualan = ?", [total_penjualan, kd_penjualan], e => {
+		
+											con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
 												if(e) throw e
-
-												con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
+		
+												con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
 													if(e) throw e
-													
-													con.commit(e => {
-														if(e) con.rollback()
-														return res.json({error: false, message:"SUCCESS"})
+													let subtotal = rows.map(function(obj) {
+														return parseInt(obj.subtotal)
 													})
+													let total_penjualan = subtotal.reduce(function(a,b){
+														return a + b 
+													}, 0)
+	
+													if(data.dibayar < total_penjualan) {
+														con.rollback()
+														return res.json({error: true, message:"nominal yang anda masukkan tidak cukup untuk membeli barang ini!"})
+													} else {
+														con.query("UPDATE penjualan SET total_penjualan = ?, dibayar = ? WHERE kd_penjualan = ?", [total_penjualan, data.dibayar, kd_penjualan], e => {
+															if(e) throw e
+			
+															con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
+																if(e) throw e
+																
+																con.commit(e => {
+																	if(e) con.rollback()
+																	return res.json({error: false, message:"SUCCESS"})
+																})
+															})
+														})
+													}
 												})
 											})
 										})
 									})
-								})
+								} else {
+									con.query("SELECT kd_penjualan FROM penjualan WHERE tgl_penjualan = ?", [data.tgl_penjualan.toString()], (e, result) => {
+										if(e) throw e
+										let kd_penjualan = result.map(function(obj){
+											return obj.kd_penjualan
+										})
+										con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
+		
+											con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
+											if(e) throw e
+												let subtotal = rows.map(function(obj) {
+													return parseInt(obj.subtotal)
+												})	
+												let total_penjualan = subtotal.reduce(function(a,b){
+													return a + b 
+												}, 0)
+		
+												con.query("UPDATE penjualan SET total_penjualan = ?  WHERE tgl_penjualan = ?", [total_penjualan, data.tgl_penjualan.toString()], e => {
+		
+													 con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
+														if(e) throw e
+		
+														con.commit(e => {
+															if(e) con.rollback()
+															return res.json({error: false, message:"SUCCESS"})
+														})
+													 })
+												 })
+											 })
+										 })
+									 })
+								}
 							})
+		
 						} else {
-							con.query("SELECT kd_penjualan FROM penjualan WHERE tgl_penjualan = ?", [data.tgl_penjualan.toString()], (e, result) => {
-								if(e) throw e
-								let kd_penjualan = result.map(function(obj){
-									return obj.kd_penjualan
-								})
-								con.query("INSERT INTO d_penjualan SET kd_penjualan = ?, kd_barang = ?, jumlah = ?, subtotal = ?", [kd_penjualan, data.kd_barang, jumlah, subtotal], e => {
-
-									con.query("SELECT subtotal FROM d_penjualan WHERE kd_penjualan = ?", [kd_penjualan], (e, rows) => {
-									if(e) throw e
-										let subtotal = rows.map(function(obj) {
-											return parseInt(obj.subtotal)
-										})	
-										let total_penjualan = subtotal.reduce(function(a,b){
-											return a + b 
-										}, 0)
-
-										con.query("UPDATE penjualan SET total_penjualan = ?  WHERE tgl_penjualan = ?", [total_penjualan, data.tgl_penjualan.toString()], e => {
-
-							 				con.query('UPDATE barang SET stok = ?? - ? WHERE kd_barang = ?', ["stok",jumlah,data.kd_barang], e => {
-	                        					if(e) throw e
-
-												con.commit(e => {
-													if(e) con.rollback()
-													return res.json({error: false, message:"SUCCESS"})
-												})
-	                     					})
-							 			})
-							 		})
-						 		})
-						 	})
+							con.rollback()
+							return res.json({error: true, message:"Stok tidak tersedia!"})
 						}
-                    })
+	
+					} else {
+						con.rollback()
+						return res.json({error: true, message:"Barang ini tidak di jual!"})
+					}
 
-                } else {
-                    con.rollback()
-                    return res.json({error: true, message:"Stok atau kd_barang tidak ada!"})
-                }
+				} else {
+					con.rollback()
+                    return res.json({error: true, message:"kd_barang tidak ditemukan!"})
+				}
+
+			})
+			})  
             })
             })
             })

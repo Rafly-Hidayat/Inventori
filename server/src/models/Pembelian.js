@@ -1,5 +1,3 @@
-
-
 module.exports = {
     get: (con,callback) => {
 		con.query("SELECT * FROM pembelian", callback)

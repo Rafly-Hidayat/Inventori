@@ -7,7 +7,7 @@ const multer = require('multer')
 const con = require('./config/db')
 
 const app = express()
-const port = 8000
+const port = process.env.PORT || 8000
 
 // setup multer
 const fileStorage = multer.diskStorage({
